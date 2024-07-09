@@ -1,0 +1,63 @@
+server:
+  port: ${server_port}
+
+spring:
+  application:
+    name: Slick-API
+  threads:
+    virtual:
+      enabled: true
+  cloud:
+    openfeign:
+      client:
+        config:
+          default:
+            logger-level: headers
+  data:
+    mongodb:
+      uri: mongodb+srv://${mongodb_username}:${mongodb_password}@slick-mongodb.4irbr6v.mongodb.net/?retryWrites=true&w=majority&appName=slick-mongodb
+      database: ENC(flf578qNxk4Voyr25sVdro7Gj8tERKHC)
+    redis:
+      host: ENC(BZpsw3XkoMUVJiTDRuSEj19yTacspS0+9isTZXzHw3mZXGVbM9B8ray9LqLCWruB2WiWIAFyn9fRs/Trgj2yv6SovhmoEwwQ)
+      port: 14909
+      username: ${redis_username}
+      password: ${redis_password}
+  cache:
+    type: redis
+
+
+jasypt:
+  encryptor:
+    bean: jasyptStringEncryptor
+    password: ${jasypt_encryptor_password}
+
+logging:
+  level:
+    org:
+      springframework:
+        data:
+          mongodb:
+            core:
+              MongoTemplate: debug
+
+management:
+  endpoints:
+    enabled-by-default: false
+    jmx:
+      exposure:
+        exclude: '*'
+    web:
+      exposure:
+        include: info, health
+  endpoint:
+    info:
+      enabled: true
+    health:
+      enabled: true
+  info:
+    env:
+      enabled: true
+
+info:
+  contact:
+    email: wjdwo951219@gmail.com
