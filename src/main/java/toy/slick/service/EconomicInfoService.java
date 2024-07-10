@@ -15,6 +15,7 @@ import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.util.Date;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class EconomicInfoService {
@@ -76,5 +77,26 @@ public class EconomicInfoService {
                 .previous(economicEvent.getPrevious())
                 .build()
                 .toMongoData(dataId));
+    }
+
+    public void saveEconomicEventList(List<EconomicEvent> economicEventList) {
+        economicEventRepository.saveAll(economicEventList
+                .stream()
+                .map(economicEvent -> {
+                    String dataId = economicEvent.getId();
+
+                    return EconomicEventRepository.EconomicEvent.builder()
+                            .dateUTC(Date.from(economicEvent.getZonedDateTime().toInstant()))
+                            .id(economicEvent.getId())
+                            .name(economicEvent.getName())
+                            .country(economicEvent.getCountry())
+                            .importance(economicEvent.getImportance())
+                            .actual(economicEvent.getActual())
+                            .forecast(economicEvent.getForecast())
+                            .previous(economicEvent.getPrevious())
+                            .build()
+                            .toMongoData(dataId);
+                })
+                .collect(Collectors.toList()));
     }
 }

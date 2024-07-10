@@ -60,4 +60,12 @@ public class EconomicInfoController {
 
         return new Response<>(HttpStatus.OK);
     }
+
+    @TimeLog
+    @PutMapping("/economicEvent/list")
+    public Response<HttpStatus> putEconomicEventList(List<EconomicEvent> economicEventList) {
+        economicInfoService.saveEconomicEventList(economicEventList);
+
+        return new Response<>(HttpStatus.OK);
+    }
 }
