@@ -6,6 +6,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import toy.slick.common.Response;
@@ -41,7 +42,7 @@ public class EconomicInfoController {
 
     @TimeLog
     @PutMapping("/fearAndGreed")
-    public Response<HttpStatus> putFearAndGreed(FearAndGreed fearAndGreed) {
+    public Response<HttpStatus> putFearAndGreed(@RequestBody FearAndGreed fearAndGreed) {
         economicInfoService.saveFearAndGreed(fearAndGreed);
 
         return new Response<>(HttpStatus.OK);
@@ -55,7 +56,7 @@ public class EconomicInfoController {
 
     @TimeLog
     @PutMapping("/economicEvent")
-    public Response<HttpStatus> putEconomicEvent(EconomicEvent economicEvent) {
+    public Response<HttpStatus> putEconomicEvent(@RequestBody EconomicEvent economicEvent) {
         economicInfoService.saveEconomicEvent(economicEvent);
 
         return new Response<>(HttpStatus.OK);
@@ -63,7 +64,7 @@ public class EconomicInfoController {
 
     @TimeLog
     @PutMapping("/economicEvent/list")
-    public Response<HttpStatus> putEconomicEventList(List<EconomicEvent> economicEventList) {
+    public Response<HttpStatus> putEconomicEventList(@RequestBody List<EconomicEvent> economicEventList) {
         economicInfoService.saveEconomicEventList(economicEventList);
 
         return new Response<>(HttpStatus.OK);
