@@ -2,7 +2,7 @@ package toy.slick.service;
 
 import org.apache.commons.codec.digest.DigestUtils;
 import org.springframework.stereotype.Service;
-import toy.slick.controller.vo.ApiKey;
+import toy.slick.controller.vo.request.ApiKey;
 import toy.slick.repository.mongo.ApiKeyRepository;
 
 import java.time.ZonedDateTime;

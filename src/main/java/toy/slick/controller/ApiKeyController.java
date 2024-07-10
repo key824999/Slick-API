@@ -7,7 +7,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import toy.slick.common.Response;
-import toy.slick.controller.vo.ApiKey;
+import toy.slick.controller.vo.request.ApiKey;
 import toy.slick.interceptor.ApiKeyInterceptor;
 import toy.slick.repository.mongo.ApiKeyRepository;
 import toy.slick.service.ApiKeyService;

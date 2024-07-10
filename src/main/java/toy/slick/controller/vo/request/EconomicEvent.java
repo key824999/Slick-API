@@ -1,4 +1,4 @@
-package toy.slick.controller.vo;
+package toy.slick.controller.vo.request;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;

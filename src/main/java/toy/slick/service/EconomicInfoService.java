@@ -6,8 +6,8 @@ import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.PathVariable;
 import toy.slick.common.Const;
-import toy.slick.controller.vo.EconomicEvent;
-import toy.slick.controller.vo.FearAndGreed;
+import toy.slick.controller.vo.request.EconomicEvent;
+import toy.slick.controller.vo.request.FearAndGreed;
 import toy.slick.repository.mongo.EconomicEventRepository;
 import toy.slick.repository.mongo.FearAndGreedRepository;
 

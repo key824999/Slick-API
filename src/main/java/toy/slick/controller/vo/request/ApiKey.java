@@ -1,4 +1,4 @@
-package toy.slick.controller.vo;
+package toy.slick.controller.vo.request;
 
 import jakarta.validation.constraints.Email;
 import lombok.AllArgsConstructor;
