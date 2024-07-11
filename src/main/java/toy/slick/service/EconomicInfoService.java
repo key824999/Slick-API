@@ -6,8 +6,8 @@ import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.PathVariable;
 import toy.slick.common.Const;
-import toy.slick.controller.vo.request.EconomicEvent;
-import toy.slick.controller.vo.request.FearAndGreed;
+import toy.slick.controller.vo.request.EconomicEventReq;
+import toy.slick.controller.vo.request.FearAndGreedReq;
 import toy.slick.repository.mongo.EconomicEventRepository;
 import toy.slick.repository.mongo.FearAndGreedRepository;
 
@@ -34,12 +34,12 @@ public class EconomicInfoService {
                 .getFirst();
     }
 
-    public void saveFearAndGreed(FearAndGreed fearAndGreed) {
+    public void saveFearAndGreed(FearAndGreedReq fearAndGreedReq) {
         String dataId = ZonedDateTime.now(ZoneId.of(Const.ZoneId.UTC)).format(Const.DateTimeFormat.yyyyMMddHH.getDateTimeFormatter());
 
         fearAndGreedRepository.save(FearAndGreedRepository.FearAndGreed.builder()
-                .rating(fearAndGreed.getRating())
-                .score(fearAndGreed.getScore())
+                .rating(fearAndGreedReq.getRating())
+                .score(fearAndGreedReq.getScore())
                 .build()
                 .toMongoData(dataId));
     }
@@ -63,37 +63,37 @@ public class EconomicInfoService {
         return economicEventRepository.findAll(gteDate, ltDate);
     }
 
-    public void saveEconomicEvent(EconomicEvent economicEvent) {
-        String dataId = economicEvent.getId();
+    public void saveEconomicEvent(EconomicEventReq economicEventReq) {
+        String dataId = economicEventReq.getId();
 
         economicEventRepository.save(EconomicEventRepository.EconomicEvent.builder()
-                .dateUTC(Date.from(economicEvent.getZonedDateTime().toInstant()))
-                .id(economicEvent.getId())
-                .name(economicEvent.getName())
-                .country(economicEvent.getCountry())
-                .importance(economicEvent.getImportance())
-                .actual(economicEvent.getActual())
-                .forecast(economicEvent.getForecast())
-                .previous(economicEvent.getPrevious())
+                .dateUTC(Date.from(economicEventReq.getZonedDateTime().toInstant()))
+                .id(economicEventReq.getId())
+                .name(economicEventReq.getName())
+                .country(economicEventReq.getCountry())
+                .importance(economicEventReq.getImportance())
+                .actual(economicEventReq.getActual())
+                .forecast(economicEventReq.getForecast())
+                .previous(economicEventReq.getPrevious())
                 .build()
                 .toMongoData(dataId));
     }
 
-    public void saveEconomicEventList(List<EconomicEvent> economicEventList) {
-        economicEventRepository.saveAll(economicEventList
+    public void saveEconomicEventList(List<EconomicEventReq> economicEventReqList) {
+        economicEventRepository.saveAll(economicEventReqList
                 .stream()
-                .map(economicEvent -> {
-                    String dataId = economicEvent.getId();
+                .map(economicEventReq -> {
+                    String dataId = economicEventReq.getId();
 
                     return EconomicEventRepository.EconomicEvent.builder()
-                            .dateUTC(Date.from(economicEvent.getZonedDateTime().toInstant()))
-                            .id(economicEvent.getId())
-                            .name(economicEvent.getName())
-                            .country(economicEvent.getCountry())
-                            .importance(economicEvent.getImportance())
-                            .actual(economicEvent.getActual())
-                            .forecast(economicEvent.getForecast())
-                            .previous(economicEvent.getPrevious())
+                            .dateUTC(Date.from(economicEventReq.getZonedDateTime().toInstant()))
+                            .id(economicEventReq.getId())
+                            .name(economicEventReq.getName())
+                            .country(economicEventReq.getCountry())
+                            .importance(economicEventReq.getImportance())
+                            .actual(economicEventReq.getActual())
+                            .forecast(economicEventReq.getForecast())
+                            .previous(economicEventReq.getPrevious())
                             .build()
                             .toMongoData(dataId);
                 })

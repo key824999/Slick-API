@@ -7,7 +7,7 @@ import java.time.ZonedDateTime;
 
 @Getter
 @AllArgsConstructor
-public class EconomicEvent {
+public class EconomicEventReq {
     private ZonedDateTime zonedDateTime;
     private String id;
     private String name;

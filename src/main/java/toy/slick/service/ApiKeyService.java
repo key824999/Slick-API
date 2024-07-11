@@ -2,9 +2,11 @@ package toy.slick.service;
 
 import org.apache.commons.codec.digest.DigestUtils;
 import org.springframework.stereotype.Service;
-import toy.slick.controller.vo.request.ApiKey;
+import toy.slick.common.Const;
+import toy.slick.controller.vo.request.ApiKeyReq;
 import toy.slick.repository.mongo.ApiKeyRepository;
 
+import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.util.Optional;
 
@@ -16,14 +18,14 @@ public class ApiKeyService {
         this.apiKeyRepository = apiKeyRepository;
     }
 
-    public ApiKeyRepository.ApiKey insertApiKey(ApiKey apiKey) {
+    public ApiKeyRepository.ApiKey insertApiKey(ApiKeyReq apiKeyReq) {
         ApiKeyRepository.ApiKey newApiKey = ApiKeyRepository.ApiKey.builder()
-                .apiKey(DigestUtils.sha512Hex(apiKey.hashCode() + apiKey.getEmail() + System.currentTimeMillis()))
-                .email(apiKey.getEmail())
+                .apiKey(DigestUtils.sha512Hex(apiKeyReq.hashCode() + apiKeyReq.getEmail() + System.currentTimeMillis()))
+                .email(apiKeyReq.getEmail())
                 .role("user")
                 .useYn(true)
                 .requestCntPer30Sec(30)
-                .expiredZonedDateTime(ZonedDateTime.now().plusYears(1).toString())
+                .expiredZonedDateTime(ZonedDateTime.now(ZoneId.of(Const.ZoneId.UTC)).plusYears(1).toString())
                 .build();
 
         String _id = newApiKey.getEmail();

@@ -1,11 +1,12 @@
 package toy.slick.controller.vo.request;
 
+import jakarta.validation.constraints.Email;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
 @Getter
 @AllArgsConstructor
-public class FearAndGreed {
-    private String rating;
-    private double score;
+public class ApiKeyReq {
+    @Email
+    private String email;
 }

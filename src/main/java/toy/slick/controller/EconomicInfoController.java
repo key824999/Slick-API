@@ -9,15 +9,20 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import toy.slick.common.Const;
 import toy.slick.common.Response;
 import toy.slick.common.annotation.TimeLog;
-import toy.slick.controller.vo.request.EconomicEvent;
-import toy.slick.controller.vo.request.FearAndGreed;
+import toy.slick.controller.vo.request.EconomicEventReq;
+import toy.slick.controller.vo.request.FearAndGreedReq;
+import toy.slick.controller.vo.response.EconomicEventRes;
+import toy.slick.controller.vo.response.FearAndGreedRes;
 import toy.slick.repository.mongo.EconomicEventRepository;
 import toy.slick.repository.mongo.FearAndGreedRepository;
 import toy.slick.service.EconomicInfoService;
 import toy.slick.service.cacheable.EconomicInfoCacheableService;
 
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
 import java.util.Date;
 import java.util.List;
 
@@ -36,36 +41,55 @@ public class EconomicInfoController {
 
     @TimeLog
     @GetMapping("/fearAndGreed")
-    public Response<FearAndGreedRepository.FearAndGreed> getFearAndGreed() {
-        return new Response<>(economicInfoService.findRecentFearAndGreed());
+    public Response<FearAndGreedRes> getFearAndGreed() {
+        FearAndGreedRepository.FearAndGreed fearAndGreed = economicInfoService.findRecentFearAndGreed();
+
+        return new Response<>(FearAndGreedRes.builder()
+                .rating(fearAndGreed.getRating())
+                .score(fearAndGreed.getScore())
+                .build());
     }
 
     @TimeLog
     @PutMapping("/fearAndGreed")
-    public Response<HttpStatus> putFearAndGreed(@RequestBody FearAndGreed fearAndGreed) {
-        economicInfoService.saveFearAndGreed(fearAndGreed);
+    public Response<HttpStatus> putFearAndGreed(@RequestBody FearAndGreedReq fearAndGreedReq) {
+        economicInfoService.saveFearAndGreed(fearAndGreedReq);
 
         return new Response<>(HttpStatus.OK);
     }
 
     @TimeLog
     @GetMapping("/economicEvent/list/{yyyy-MM-dd_UTC}")
-    public Response<List<EconomicEventRepository.EconomicEvent>> getEconomicEventList(@PathVariable("yyyy-MM-dd_UTC") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) Date date) {
-        return new Response<>(economicInfoCacheableService.findEconomicEventList(date));
+    public Response<List<EconomicEventRes>> getEconomicEventList(@PathVariable("yyyy-MM-dd_UTC") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) Date date) {
+        List<EconomicEventRepository.EconomicEvent> economicEventList = economicInfoCacheableService.findEconomicEventList(date);
+
+        return new Response<>(economicEventList
+                .stream()
+                .map(economicEvent -> EconomicEventRes.builder()
+                        .actual(economicEvent.getActual())
+                        .forecast(economicEvent.getForecast())
+                        .previous(economicEvent.getPrevious())
+                        .id(economicEvent.getId())
+                        .country(economicEvent.getCountry())
+                        .importance(economicEvent.getImportance())
+                        .name(economicEvent.getName())
+                        .zonedDateTime(ZonedDateTime.ofInstant(economicEvent.getDateUTC().toInstant(), ZoneId.of(Const.ZoneId.UTC)))
+                        .build())
+                .toList());
     }
 
     @TimeLog
     @PutMapping("/economicEvent")
-    public Response<HttpStatus> putEconomicEvent(@RequestBody EconomicEvent economicEvent) {
-        economicInfoService.saveEconomicEvent(economicEvent);
+    public Response<HttpStatus> putEconomicEvent(@RequestBody EconomicEventReq economicEventReq) {
+        economicInfoService.saveEconomicEvent(economicEventReq);
 
         return new Response<>(HttpStatus.OK);
     }
 
     @TimeLog
     @PutMapping("/economicEvent/list")
-    public Response<HttpStatus> putEconomicEventList(@RequestBody List<EconomicEvent> economicEventList) {
-        economicInfoService.saveEconomicEventList(economicEventList);
+    public Response<HttpStatus> putEconomicEventList(@RequestBody List<EconomicEventReq> economicEventReqList) {
+        economicInfoService.saveEconomicEventList(economicEventReqList);
 
         return new Response<>(HttpStatus.OK);
     }
