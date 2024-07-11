@@ -12,10 +12,13 @@ import org.springframework.web.bind.annotation.RestController;
 import toy.slick.common.Const;
 import toy.slick.common.Response;
 import toy.slick.common.annotation.TimeLog;
+import toy.slick.controller.vo.request.DJIReq;
 import toy.slick.controller.vo.request.EconomicEventReq;
 import toy.slick.controller.vo.request.FearAndGreedReq;
+import toy.slick.controller.vo.response.DJIRes;
 import toy.slick.controller.vo.response.EconomicEventRes;
 import toy.slick.controller.vo.response.FearAndGreedRes;
+import toy.slick.repository.mongo.DJIRepository;
 import toy.slick.repository.mongo.EconomicEventRepository;
 import toy.slick.repository.mongo.FearAndGreedRepository;
 import toy.slick.service.EconomicInfoService;
@@ -92,5 +95,25 @@ public class EconomicInfoController {
         economicInfoService.saveEconomicEventList(economicEventReqList);
 
         return new Response<>(HttpStatus.OK);
+    }
+
+    @TimeLog
+    @PutMapping("/DJI")
+    public Response<HttpStatus> putDJI(@RequestBody DJIReq djiReq) {
+        economicInfoService.saveDJI(djiReq);
+
+        return new Response<>(HttpStatus.OK);
+    }
+
+    @TimeLog
+    @GetMapping("/DJI")
+    public Response<DJIRes> getDJI() {
+        DJIRepository.DowJonesIndustrialAverage DJI = economicInfoCacheableService.getDJI();
+
+        return new Response<>(DJIRes.builder()
+                .price(DJI.getPrice())
+                .priceChange(DJI.getPriceChange())
+                .priceChangePercent(DJI.getPriceChangePercent())
+                .build());
     }
 }

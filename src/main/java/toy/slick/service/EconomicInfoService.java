@@ -6,8 +6,10 @@ import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.PathVariable;
 import toy.slick.common.Const;
+import toy.slick.controller.vo.request.DJIReq;
 import toy.slick.controller.vo.request.EconomicEventReq;
 import toy.slick.controller.vo.request.FearAndGreedReq;
+import toy.slick.repository.mongo.DJIRepository;
 import toy.slick.repository.mongo.EconomicEventRepository;
 import toy.slick.repository.mongo.FearAndGreedRepository;
 
@@ -21,10 +23,14 @@ import java.util.stream.Collectors;
 public class EconomicInfoService {
     private final FearAndGreedRepository fearAndGreedRepository;
     private final EconomicEventRepository economicEventRepository;
+    private final DJIRepository djiRepository;
 
-    public EconomicInfoService(FearAndGreedRepository fearAndGreedRepository, EconomicEventRepository economicEventRepository) {
+    public EconomicInfoService(FearAndGreedRepository fearAndGreedRepository,
+                               EconomicEventRepository economicEventRepository,
+                               DJIRepository djiRepository) {
         this.fearAndGreedRepository = fearAndGreedRepository;
         this.economicEventRepository = economicEventRepository;
+        this.djiRepository = djiRepository;
     }
 
     public FearAndGreedRepository.FearAndGreed findRecentFearAndGreed() {
@@ -98,5 +104,23 @@ public class EconomicInfoService {
                             .toMongoData(dataId);
                 })
                 .collect(Collectors.toList()));
+    }
+
+    public void saveDJI(DJIReq djiReq) {
+        String _id = ZonedDateTime.now(ZoneId.of(Const.ZoneId.UTC)).format(Const.DateTimeFormat.yyyyMMddHH.getDateTimeFormatter());
+
+        djiRepository.save(DJIRepository.DowJonesIndustrialAverage.builder()
+                .price(djiReq.getPrice())
+                .priceChange(djiReq.getPriceChange())
+                .priceChangePercent(djiReq.getPriceChangePercent())
+                .build()
+                .toMongoData(_id));
+    }
+
+    public DJIRepository.DowJonesIndustrialAverage getDJI() {
+        return djiRepository
+                .findAll(PageRequest.of(0, 10, Sort.by(Sort.Direction.DESC, "_id")))
+                .getContent()
+                .get(0);
     }
 }
