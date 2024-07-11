@@ -115,6 +115,8 @@ public class EconomicInfoService {
                 .collect(Collectors.toList()));
     }
 
+    // TODO : 상수화
+
     public void saveDJI(DJIReq djiReq) {
         String _id = ZonedDateTime.now(ZoneId.of(Const.ZoneId.UTC)).format(Const.DateTimeFormat.yyyyMMddHH.getDateTimeFormatter());
 
