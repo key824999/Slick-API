@@ -15,12 +15,18 @@ import toy.slick.common.annotation.TimeLog;
 import toy.slick.controller.vo.request.DJIReq;
 import toy.slick.controller.vo.request.EconomicEventReq;
 import toy.slick.controller.vo.request.FearAndGreedReq;
+import toy.slick.controller.vo.request.IXICReq;
+import toy.slick.controller.vo.request.SPXReq;
 import toy.slick.controller.vo.response.DJIRes;
 import toy.slick.controller.vo.response.EconomicEventRes;
 import toy.slick.controller.vo.response.FearAndGreedRes;
+import toy.slick.controller.vo.response.IXICRes;
+import toy.slick.controller.vo.response.SPXRes;
 import toy.slick.repository.mongo.DJIRepository;
 import toy.slick.repository.mongo.EconomicEventRepository;
 import toy.slick.repository.mongo.FearAndGreedRepository;
+import toy.slick.repository.mongo.IXICRepository;
+import toy.slick.repository.mongo.SPXRepository;
 import toy.slick.service.EconomicInfoService;
 import toy.slick.service.cacheable.EconomicInfoCacheableService;
 
@@ -114,6 +120,46 @@ public class EconomicInfoController {
                 .price(DJI.getPrice())
                 .priceChange(DJI.getPriceChange())
                 .priceChangePercent(DJI.getPriceChangePercent())
+                .build());
+    }
+
+    @TimeLog
+    @PutMapping("/SPX")
+    public Response<HttpStatus> putSPX(@RequestBody SPXReq spxReq) {
+        economicInfoService.saveSPX(spxReq);
+
+        return new Response<>(HttpStatus.OK);
+    }
+
+    @TimeLog
+    @GetMapping("/SPX")
+    public Response<SPXRes> getSPX() {
+        SPXRepository.StandardAndPoor500 SPX = economicInfoCacheableService.getSPX();
+
+        return new Response<>(SPXRes.builder()
+                .price(SPX.getPrice())
+                .priceChange(SPX.getPriceChange())
+                .priceChangePercent(SPX.getPriceChangePercent())
+                .build());
+    }
+
+    @TimeLog
+    @PutMapping("/IXIC")
+    public Response<HttpStatus> putIXIC(@RequestBody IXICReq ixicReq) {
+        economicInfoService.saveIXIC(ixicReq);
+
+        return new Response<>(HttpStatus.OK);
+    }
+
+    @TimeLog
+    @GetMapping("/IXIC")
+    public Response<IXICRes> getIXIC() {
+        IXICRepository.NasdaqComposite IXIC = economicInfoCacheableService.getIXIC();
+
+        return new Response<>(IXICRes.builder()
+                .price(IXIC.getPrice())
+                .priceChange(IXIC.getPriceChange())
+                .priceChangePercent(IXIC.getPriceChangePercent())
                 .build());
     }
 }

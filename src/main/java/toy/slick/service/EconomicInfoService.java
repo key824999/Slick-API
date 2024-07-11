@@ -9,9 +9,13 @@ import toy.slick.common.Const;
 import toy.slick.controller.vo.request.DJIReq;
 import toy.slick.controller.vo.request.EconomicEventReq;
 import toy.slick.controller.vo.request.FearAndGreedReq;
+import toy.slick.controller.vo.request.IXICReq;
+import toy.slick.controller.vo.request.SPXReq;
 import toy.slick.repository.mongo.DJIRepository;
 import toy.slick.repository.mongo.EconomicEventRepository;
 import toy.slick.repository.mongo.FearAndGreedRepository;
+import toy.slick.repository.mongo.IXICRepository;
+import toy.slick.repository.mongo.SPXRepository;
 
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
@@ -24,13 +28,18 @@ public class EconomicInfoService {
     private final FearAndGreedRepository fearAndGreedRepository;
     private final EconomicEventRepository economicEventRepository;
     private final DJIRepository djiRepository;
+    private final SPXRepository spxRepository;
+    private final IXICRepository ixicRepository;
 
     public EconomicInfoService(FearAndGreedRepository fearAndGreedRepository,
                                EconomicEventRepository economicEventRepository,
-                               DJIRepository djiRepository) {
+                               DJIRepository djiRepository,
+                               SPXRepository spxRepository, IXICRepository ixicRepository) {
         this.fearAndGreedRepository = fearAndGreedRepository;
         this.economicEventRepository = economicEventRepository;
         this.djiRepository = djiRepository;
+        this.spxRepository = spxRepository;
+        this.ixicRepository = ixicRepository;
     }
 
     public FearAndGreedRepository.FearAndGreed findRecentFearAndGreed() {
@@ -119,6 +128,42 @@ public class EconomicInfoService {
 
     public DJIRepository.DowJonesIndustrialAverage getDJI() {
         return djiRepository
+                .findAll(PageRequest.of(0, 10, Sort.by(Sort.Direction.DESC, "_id")))
+                .getContent()
+                .get(0);
+    }
+
+    public void saveSPX(SPXReq spxReq) {
+        String _id = ZonedDateTime.now(ZoneId.of(Const.ZoneId.UTC)).format(Const.DateTimeFormat.yyyyMMddHH.getDateTimeFormatter());
+
+        spxRepository.save(SPXRepository.StandardAndPoor500.builder()
+                .price(spxReq.getPrice())
+                .priceChange(spxReq.getPriceChange())
+                .priceChangePercent(spxReq.getPriceChangePercent())
+                .build()
+                .toMongoData(_id));
+    }
+
+    public SPXRepository.StandardAndPoor500 getSPX() {
+        return spxRepository
+                .findAll(PageRequest.of(0, 10, Sort.by(Sort.Direction.DESC, "_id")))
+                .getContent()
+                .get(0);
+    }
+
+    public void saveIXIC(IXICReq ixicReq) {
+        String _id = ZonedDateTime.now(ZoneId.of(Const.ZoneId.UTC)).format(Const.DateTimeFormat.yyyyMMddHH.getDateTimeFormatter());
+
+        ixicRepository.save(IXICRepository.NasdaqComposite.builder()
+                .price(ixicReq.getPrice())
+                .priceChange(ixicReq.getPriceChange())
+                .priceChangePercent(ixicReq.getPriceChangePercent())
+                .build()
+                .toMongoData(_id));
+    }
+
+    public IXICRepository.NasdaqComposite getIXIC() {
+        return ixicRepository
                 .findAll(PageRequest.of(0, 10, Sort.by(Sort.Direction.DESC, "_id")))
                 .getContent()
                 .get(0);

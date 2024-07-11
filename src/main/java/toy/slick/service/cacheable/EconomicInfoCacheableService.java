@@ -6,6 +6,8 @@ import toy.slick.config.RedisConfig;
 import toy.slick.repository.mongo.DJIRepository;
 import toy.slick.repository.mongo.EconomicEventRepository;
 import toy.slick.repository.mongo.FearAndGreedRepository;
+import toy.slick.repository.mongo.IXICRepository;
+import toy.slick.repository.mongo.SPXRepository;
 import toy.slick.service.EconomicInfoService;
 
 import java.util.Date;
@@ -15,8 +17,10 @@ import java.util.List;
 public class EconomicInfoCacheableService extends EconomicInfoService {
     public EconomicInfoCacheableService(FearAndGreedRepository fearAndGreedRepository,
                                         EconomicEventRepository economicEventRepository,
-                                        DJIRepository djiRepository) {
-        super(fearAndGreedRepository, economicEventRepository, djiRepository);
+                                        DJIRepository djiRepository,
+                                        SPXRepository spxRepository,
+                                        IXICRepository ixicRepository) {
+        super(fearAndGreedRepository, economicEventRepository, djiRepository, spxRepository, ixicRepository);
     }
 
     @Override
@@ -35,5 +39,17 @@ public class EconomicInfoCacheableService extends EconomicInfoService {
     @Cacheable(cacheNames = {RedisConfig.CacheNames._1min})
     public DJIRepository.DowJonesIndustrialAverage getDJI() {
         return super.getDJI();
+    }
+
+    @Override
+    @Cacheable(cacheNames = {RedisConfig.CacheNames._1min})
+    public SPXRepository.StandardAndPoor500 getSPX() {
+        return super.getSPX();
+    }
+
+    @Override
+    @Cacheable(cacheNames = {RedisConfig.CacheNames._1min})
+    public IXICRepository.NasdaqComposite getIXIC() {
+        return super.getIXIC();
     }
 }
