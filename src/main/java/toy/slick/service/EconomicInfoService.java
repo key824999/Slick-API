@@ -70,8 +70,8 @@ public class EconomicInfoService {
 
         Date ltDate = Date.from(zonedDateTime
                 .plusDays(1)
-                .withHour(4)
-                .withMinute(40)
+                .withHour(0)
+                .withMinute(0)
                 .withSecond(0)
                 .withNano(0).toInstant());
 
